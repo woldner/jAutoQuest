@@ -1,0 +1,8 @@
+## Interface: 80200
+## Title: jAutoQuest
+## Notes: Enables automated questing with score from Pawn.
+## Author: jwldnr
+## Version: 1.0
+## Dependencies: Pawn
+
+jAutoQuest.lua
