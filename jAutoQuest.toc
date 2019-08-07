@@ -1,8 +1,8 @@
 ## Interface: 80200
 ## Title: jAutoQuest
-## Notes: Enables automated questing with score from Pawn.
+## Notes: Automate quest flow and select rewards based on score from Pawn.
+## Version: 1.1
 ## Author: jwldnr
-## Version: 1.0
 ## Dependencies: Pawn
 
 jAutoQuest.lua

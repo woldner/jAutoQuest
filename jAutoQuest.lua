@@ -5,7 +5,6 @@ local pairs = pairs
 
 local CreateFrame = CreateFrame
 local hooksecurefunc = hooksecurefunc
-
 local IsShiftKeyDown = IsShiftKeyDown
 local ConfirmAcceptQuest = ConfirmAcceptQuest
 local GetNumQuestChoices = GetNumQuestChoices
@@ -26,34 +25,31 @@ local SelectGossipActiveQuest = SelectGossipActiveQuest
 local SelectGossipAvailableQuest = SelectGossipAvailableQuest
 local QuestDetailAcceptButton_OnClick = QuestDetailAcceptButton_OnClick
 
--- Pawn events
 local GetQuestItemLink = GetQuestItemLink
 local PawnGetItemData = PawnGetItemData
 local PawnIsItemAnUpgrade = PawnIsItemAnUpgrade
 
--- Event handling
 function Addon:OnEvent(event, ...)
   local action = self[event]
 
   if (action and not IsShiftKeyDown()) then
-    action(self, event)
+    action(self, event, ...)
   end
 end
 
--- Main
 function Addon:Load()
-  local handler = CreateFrame("Frame", nil)
+  self.frame = CreateFrame("Frame", nil)
 
-  handler:SetScript("OnEvent", function(_, ...)
+  self.frame:SetScript("OnEvent", function(_, ...)
       self:OnEvent(...)
     end)
 
-  handler:RegisterEvent("QUEST_ACCEPT_CONFIRM")
-  handler:RegisterEvent("QUEST_COMPLETE")
-  handler:RegisterEvent("QUEST_DETAIL")
-  handler:RegisterEvent("QUEST_GREETING")
-  handler:RegisterEvent("QUEST_PROGRESS")
-  handler:RegisterEvent("GOSSIP_SHOW")
+  self.frame:RegisterEvent("QUEST_ACCEPT_CONFIRM")
+  self.frame:RegisterEvent("QUEST_COMPLETE")
+  self.frame:RegisterEvent("QUEST_DETAIL")
+  self.frame:RegisterEvent("QUEST_GREETING")
+  self.frame:RegisterEvent("QUEST_PROGRESS")
+  self.frame:RegisterEvent("GOSSIP_SHOW")
 end
 
 -- This event fires when an escort quest is started by another player.
