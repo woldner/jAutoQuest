@@ -161,5 +161,5 @@ function Addon:ADDON_LOADED(_, name)
   end
 end
 
--- call
+-- begin
 Addon:Load()
