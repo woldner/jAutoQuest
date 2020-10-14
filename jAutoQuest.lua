@@ -1,30 +1,21 @@
 local AddonName, Addon = ...
 
-local select = select
+-- locals and speed
 local pairs = pairs
 
+local C_GossipInfo = C_GossipInfo
 local CreateFrame = CreateFrame
-local hooksecurefunc = hooksecurefunc
 local IsShiftKeyDown = IsShiftKeyDown
 local ConfirmAcceptQuest = ConfirmAcceptQuest
 local GetNumQuestChoices = GetNumQuestChoices
 local GetQuestReward = GetQuestReward
-local GetNumActiveQuests = GetNumActiveQuests
-local GetNumAvailableQuests = GetNumAvailableQuests
 local GetActiveTitle = GetActiveTitle
 local GetAvailableQuestInfo = GetAvailableQuestInfo
-local SelectActiveQuest = SelectActiveQuest
-local SelectAvailableQuest = SelectAvailableQuest
 local IsQuestCompletable = IsQuestCompletable
 local CompleteQuest = CompleteQuest
-local GetGossipActiveQuests = GetGossipActiveQuests
-local GetGossipAvailableQuests = GetGossipAvailableQuests
-local GetNumGossipActiveQuests = GetNumGossipActiveQuests
-local GetNumGossipAvailableQuests = GetNumGossipAvailableQuests
-local SelectGossipActiveQuest = SelectGossipActiveQuest
-local SelectGossipAvailableQuest = SelectGossipAvailableQuest
 local QuestDetailAcceptButton_OnClick = QuestDetailAcceptButton_OnClick
 
+-- pawn functions
 local GetQuestItemLink = GetQuestItemLink
 local PawnGetItemData = PawnGetItemData
 local PawnIsItemAnUpgrade = PawnIsItemAnUpgrade
@@ -41,9 +32,10 @@ function Addon:Load()
   self.frame = CreateFrame("Frame", nil)
 
   self.frame:SetScript("OnEvent", function(_, ...)
-      self:OnEvent(...)
-    end)
+    self:OnEvent(...)
+  end)
 
+  self.frame:RegisterEvent("ADDON_LOADED")
   self.frame:RegisterEvent("QUEST_ACCEPT_CONFIRM")
   self.frame:RegisterEvent("QUEST_COMPLETE")
   self.frame:RegisterEvent("QUEST_DETAIL")
@@ -115,17 +107,17 @@ end
 function Addon:QUEST_GREETING()
   -- print("QUEST_GREETING")
 
-  for i = 1, GetNumActiveQuests() do
+  for i = 1, C_GossipInfo.GetNumActiveQuests() do
     local _, isComplete = GetActiveTitle(i)
     if (isComplete) then
-      SelectActiveQuest(i)
+      C_GossipInfo.SelectActiveQuest(i)
     end
   end
 
-  for i = 1, GetNumAvailableQuests() do
+  for i = 1, C_GossipInfo.GetNumAvailableQuests() do
     local isTrivial = GetAvailableQuestInfo(i)
     if (not isTrivial) then
-      SelectAvailableQuest(i)
+      C_GossipInfo.SelectAvailableQuest(i)
     end
   end
 end
@@ -146,20 +138,26 @@ end
 function Addon:GOSSIP_SHOW()
   -- print("GOSSIP_SHOW")
 
-  local activeQuests = { GetGossipActiveQuests() }
-  for i = 1, GetNumGossipActiveQuests() do
-    local isComplete = activeQuests[(i - 1) * 6 + 4]
-    if (isComplete) then
-      SelectGossipActiveQuest(i)
+  local activeQuests = C_GossipInfo.GetActiveQuests()
+  for i = 1, C_GossipInfo.GetNumActiveQuests() do
+    if (activeQuests[i].isComplete) then
+      C_GossipInfo.SelectActiveQuest(i)
     end
   end
 
-  local availableQuests = { GetGossipAvailableQuests() }
-  for i = 1, GetNumGossipAvailableQuests() do
-    local isTrivial, isRepeatable = availableQuests[(i - 1) * 7 + 3], availableQuests[(i - 1) * 7 + 5]
-    if (not isRepeatable and not isTrivial) then
-      SelectGossipAvailableQuest(i)
+  local availableQuests = C_GossipInfo.GetAvailableQuests()
+  for i = 1, C_GossipInfo.GetNumAvailableQuests() do
+    if (not availableQuests[i].repeatable and not availableQuests[i].isTrivial) then
+      C_GossipInfo.SelectAvailableQuest(i)
     end
+  end
+end
+
+function Addon:ADDON_LOADED(_, name)
+  if (name == AddonName) then
+    self.frame:UnregisterEvent("ADDON_LOADED")
+
+    print(name, "loaded")
   end
 end
 
