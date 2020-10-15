@@ -36,12 +36,6 @@ function Addon:Load()
   end)
 
   self.frame:RegisterEvent("ADDON_LOADED")
-  self.frame:RegisterEvent("QUEST_ACCEPT_CONFIRM")
-  self.frame:RegisterEvent("QUEST_COMPLETE")
-  self.frame:RegisterEvent("QUEST_DETAIL")
-  self.frame:RegisterEvent("QUEST_GREETING")
-  self.frame:RegisterEvent("QUEST_PROGRESS")
-  self.frame:RegisterEvent("GOSSIP_SHOW")
 end
 
 -- This event fires when an escort quest is started by another player.
@@ -138,16 +132,14 @@ end
 function Addon:GOSSIP_SHOW()
   -- print("GOSSIP_SHOW")
 
-  local activeQuests = C_GossipInfo.GetActiveQuests()
-  for i = 1, C_GossipInfo.GetNumActiveQuests() do
-    if (activeQuests[i].isComplete) then
+  for i, quest in pairs(C_GossipInfo.GetActiveQuests()) do
+    if (quest.isComplete) then
       C_GossipInfo.SelectActiveQuest(i)
     end
   end
 
-  local availableQuests = C_GossipInfo.GetAvailableQuests()
-  for i = 1, C_GossipInfo.GetNumAvailableQuests() do
-    if (not availableQuests[i].repeatable and not availableQuests[i].isTrivial) then
+  for i, quest in pairs(C_GossipInfo.GetAvailableQuests()) do
+    if (not quest.repeatable and not quest.isTrivial) then
       C_GossipInfo.SelectAvailableQuest(i)
     end
   end
@@ -157,7 +149,18 @@ function Addon:ADDON_LOADED(_, name)
   if (name == AddonName) then
     self.frame:UnregisterEvent("ADDON_LOADED")
 
-    print(name, "loaded")
+    if (IsAddOnLoaded("Pawn")) then
+      self.frame:RegisterEvent("QUEST_ACCEPT_CONFIRM")
+      self.frame:RegisterEvent("QUEST_COMPLETE")
+      self.frame:RegisterEvent("QUEST_DETAIL")
+      self.frame:RegisterEvent("QUEST_GREETING")
+      self.frame:RegisterEvent("QUEST_PROGRESS")
+      self.frame:RegisterEvent("GOSSIP_SHOW")
+
+      print(name, "loaded")
+    else
+      print("Could not find the AddOn Pawn. This addon will not do anything.")
+    end
   end
 end
 
