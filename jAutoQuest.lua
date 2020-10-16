@@ -23,7 +23,7 @@ local GetQuestItemLink = GetQuestItemLink
 local PawnGetItemData = PawnGetItemData
 local PawnIsItemAnUpgrade = PawnIsItemAnUpgrade
 
-local compareUpgrades = function(a, b)
+local function compareUpgrades(a, b)
   return a.value > b.value
 end
 
