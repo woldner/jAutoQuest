@@ -23,6 +23,10 @@ local GetQuestItemLink = GetQuestItemLink
 local PawnGetItemData = PawnGetItemData
 local PawnIsItemAnUpgrade = PawnIsItemAnUpgrade
 
+local compareUpgrades = function(a, b)
+  return a.value > b.value
+end
+
 function Addon:OnEvent(event, ...)
   local action = self[event]
 
@@ -34,9 +38,12 @@ end
 function Addon:Load()
   self.frame = CreateFrame("Frame", nil)
 
-  self.frame:SetScript("OnEvent", function(_, ...)
-    self:OnEvent(...)
-  end)
+  self.frame:SetScript(
+    "OnEvent",
+    function(_, ...)
+      self:OnEvent(...)
+    end
+  )
 
   self.frame:RegisterEvent("ADDON_LOADED")
 end
@@ -77,7 +84,7 @@ function Addon:QUEST_COMPLETE()
 
           if (infos) then
             for _, info in pairs(infos) do
-              local upgrade = { choice = i, value = info.PercentUpgrade }
+              local upgrade = {choice = i, value = info.PercentUpgrade}
               upgrades[#upgrades + 1] = upgrade
             end
           end
@@ -86,7 +93,7 @@ function Addon:QUEST_COMPLETE()
     end
 
     if (#upgrades > 0) then
-      table.sort(upgrades, function (a, b) return a.value > b.value end)
+      table.sort(upgrades, compareUpgrades)
       GetQuestReward(upgrades[1].choice)
     end
   end
