@@ -11,11 +11,14 @@ local GetNumQuestChoices = GetNumQuestChoices
 local GetQuestReward = GetQuestReward
 local GetActiveTitle = GetActiveTitle
 local GetAvailableQuestInfo = GetAvailableQuestInfo
+local GetNumActiveQuests = GetNumActiveQuests
+local GetNumAvailableQuests = GetNumAvailableQuests
+local SelectActiveQuest = SelectActiveQuest
+local SelectAvailableQuest = SelectAvailableQuest
 local IsQuestCompletable = IsQuestCompletable
 local CompleteQuest = CompleteQuest
 local QuestDetailAcceptButton_OnClick = QuestDetailAcceptButton_OnClick
 
--- pawn functions
 local GetQuestItemLink = GetQuestItemLink
 local PawnGetItemData = PawnGetItemData
 local PawnIsItemAnUpgrade = PawnIsItemAnUpgrade
@@ -101,17 +104,17 @@ end
 function Addon:QUEST_GREETING()
   -- print("QUEST_GREETING")
 
-  for i = 1, C_GossipInfo.GetNumActiveQuests() do
+  for i = 1, GetNumActiveQuests() do
     local _, isComplete = GetActiveTitle(i)
     if (isComplete) then
-      C_GossipInfo.SelectActiveQuest(i)
+      SelectActiveQuest(i)
     end
   end
 
-  for i = 1, C_GossipInfo.GetNumAvailableQuests() do
+  for i = 1, GetNumAvailableQuests() do
     local isTrivial = GetAvailableQuestInfo(i)
     if (not isTrivial) then
-      C_GossipInfo.SelectAvailableQuest(i)
+      SelectAvailableQuest(i)
     end
   end
 end
@@ -149,18 +152,14 @@ function Addon:ADDON_LOADED(_, name)
   if (name == AddonName) then
     self.frame:UnregisterEvent("ADDON_LOADED")
 
-    if (IsAddOnLoaded("Pawn")) then
-      self.frame:RegisterEvent("QUEST_ACCEPT_CONFIRM")
-      self.frame:RegisterEvent("QUEST_COMPLETE")
-      self.frame:RegisterEvent("QUEST_DETAIL")
-      self.frame:RegisterEvent("QUEST_GREETING")
-      self.frame:RegisterEvent("QUEST_PROGRESS")
-      self.frame:RegisterEvent("GOSSIP_SHOW")
+    self.frame:RegisterEvent("QUEST_ACCEPT_CONFIRM")
+    self.frame:RegisterEvent("QUEST_COMPLETE")
+    self.frame:RegisterEvent("QUEST_DETAIL")
+    self.frame:RegisterEvent("QUEST_GREETING")
+    self.frame:RegisterEvent("QUEST_PROGRESS")
+    self.frame:RegisterEvent("GOSSIP_SHOW")
 
-      print(name, "loaded")
-    else
-      print("Could not find the AddOn Pawn. This addon will not do anything.")
-    end
+    print(name, "loaded")
   end
 end
 
