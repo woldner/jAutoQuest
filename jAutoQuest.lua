@@ -3,6 +3,7 @@ local AddonName, Addon = ...
 -- locals and speed
 local pairs = pairs
 
+local IsAddOnLoaded = IsAddOnLoaded
 local C_GossipInfo = C_GossipInfo
 local CreateFrame = CreateFrame
 local IsShiftKeyDown = IsShiftKeyDown
@@ -27,7 +28,7 @@ function Addon:OnEvent(event, ...)
   local action = self[event]
 
   if (action and not IsShiftKeyDown()) then
-    action(self, event, ...)
+    action(self, ...)
   end
 end
 
@@ -148,18 +149,18 @@ function Addon:GOSSIP_SHOW()
   end
 end
 
-function Addon:ADDON_LOADED(_, name)
-  if (name == AddonName) then
-    self.frame:UnregisterEvent("ADDON_LOADED")
-
+function Addon:ADDON_LOADED(name)
+  if (name == AddonName and IsAddOnLoaded("Pawn")) then
+    self.frame:RegisterEvent("GOSSIP_SHOW")
     self.frame:RegisterEvent("QUEST_ACCEPT_CONFIRM")
     self.frame:RegisterEvent("QUEST_COMPLETE")
     self.frame:RegisterEvent("QUEST_DETAIL")
     self.frame:RegisterEvent("QUEST_GREETING")
     self.frame:RegisterEvent("QUEST_PROGRESS")
-    self.frame:RegisterEvent("GOSSIP_SHOW")
 
     print(name, "loaded")
+
+    self.frame:UnregisterEvent("ADDON_LOADED")
   end
 end
 
