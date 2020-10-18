@@ -1,4 +1,4 @@
-## Interface: 90100
+## Interface: 90001
 ## Title: jAutoQuest
 ## Notes: Automate quest flow and select rewards based on score from Pawn.
 ## Version: 1.0
