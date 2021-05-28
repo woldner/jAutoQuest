@@ -71,24 +71,19 @@ function Addon:QUEST_COMPLETE()
       local link = GetQuestItemLink("choice", i)
 
       if (link) then
-        local data = PawnGetItemData(link)
+        local item = PawnGetItemData(link)
 
-        if (data) then
-          local infos = PawnIsItemAnUpgrade(data)
-
-          if (infos) then
-            for _, info in pairs(infos) do
-              local upgrade = {choice = i, value = info.PercentUpgrade}
-              upgrades[#upgrades + 1] = upgrade
-            end
+        if (item) then
+          for _, upgrade in pairs(PawnIsItemAnUpgrade(item) or {}) do
+            upgrades[#upgrades + 1] = {index = i, value = upgrade.PercentUpgrade}
           end
         end
       end
     end
 
-    if (#upgrades > 0) then
+    if (#upgrades ~= 0) then
       table.sort(upgrades, function (a, b) return a.value > b.value end)
-      GetQuestReward(upgrades[1].choice)
+      GetQuestReward(upgrades[1].index)
     end
   end
 end
@@ -136,16 +131,15 @@ end
 function Addon:GOSSIP_SHOW()
   -- print("GOSSIP_SHOW")
 
-  for i, quest in pairs(C_GossipInfo.GetActiveQuests()) do
-    if (quest.isComplete) then
-      C_GossipInfo.SelectActiveQuest(i)
+  for i = 1, GetNumGossipActiveQuests() do
+    local isComplete = select(i * 6 - 5 + 3, GetGossipActiveQuests())
+    if (isComplete) then
+      SelectGossipActiveQuest(i)
     end
   end
 
-  for i, quest in pairs(C_GossipInfo.GetAvailableQuests()) do
-    if (not quest.repeatable and not quest.isTrivial) then
-      C_GossipInfo.SelectAvailableQuest(i)
-    end
+  for i = 1, GetNumGossipAvailableQuests() do
+    SelectGossipAvailableQuest(i)
   end
 end
 
