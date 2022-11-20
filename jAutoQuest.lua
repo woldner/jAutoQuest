@@ -78,7 +78,7 @@ function Addon:QUEST_COMPLETE()
 
           if (infos) then
             for _, info in pairs(infos) do
-              local upgrade = {choice = i, value = info.PercentUpgrade}
+              local upgrade = { choice = i, value = info.PercentUpgrade }
               upgrades[#upgrades + 1] = upgrade
             end
           end
@@ -138,13 +138,13 @@ function Addon:GOSSIP_SHOW()
 
   for i, quest in pairs(C_GossipInfo.GetActiveQuests()) do
     if (quest.isComplete) then
-      C_GossipInfo.SelectActiveQuest(i)
+      C_GossipInfo.SelectActiveQuest(quest.questID)
     end
   end
 
   for i, quest in pairs(C_GossipInfo.GetAvailableQuests()) do
     if (not quest.repeatable and not quest.isTrivial) then
-      C_GossipInfo.SelectAvailableQuest(i)
+      C_GossipInfo.SelectAvailableQuest(quest.questID)
     end
   end
 end

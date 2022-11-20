@@ -1,8 +1,8 @@
-## Interface: 90001
-## Title: jAutoQuest
-## Notes: Automate quest flow and select rewards based on score from Pawn.
-## Version: 1.0
-## Author: jwldnr
+## Interface: 100002
+## Title: jAutoQuest (Dragonflight)
+## Notes: Automate quests and automatically select quest rewards based on item score from Pawn.
+## Version: 1.2
+## Author: vvoldner
 ## Dependencies: Pawn
 
 jAutoQuest.lua
